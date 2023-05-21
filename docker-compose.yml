@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+    reload_test:
+      image: go-air
+      container_name: go-air
+      build: .
+      ports:
+        - 8080:8080
+      volumes:
+        - ./app:/app
