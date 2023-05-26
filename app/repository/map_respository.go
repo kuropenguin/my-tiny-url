@@ -3,6 +3,7 @@ package repository
 func NewMapRepository() IRepository {
 	return &MapRepository{
 		// TODO 永続化層に移す
+		//参考にする https://qiita.com/hirotakan/items/698c1f5773a3cca6193e
 		tinyURLStorage: make(map[string]string),
 		urlStorage:     make(map[string]string),
 	}
