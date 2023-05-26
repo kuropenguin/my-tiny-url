@@ -2,6 +2,7 @@ package repository
 
 func NewMapRepository() IRepository {
 	return &MapRepository{
+		// TODO 永続化層に移す
 		tinyURLStorage: make(map[string]string),
 		urlStorage:     make(map[string]string),
 	}
