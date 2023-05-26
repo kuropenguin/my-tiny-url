@@ -9,5 +9,5 @@ type IRepository interface {
 }
 
 var (
-	ErrNotFound = errors.New("Not Found")
+	ErrNotFound = errors.New("not found")
 )
