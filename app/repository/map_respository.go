@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/kuropenguin/my-tiny-url/app/entity"
+import (
+	"github.com/kuropenguin/my-tiny-url/app/entity"
+)
 
 func NewMapRepository() IRepository {
 	return &MapRepository{
@@ -20,7 +22,7 @@ func (m *MapRepository) Save(url entity.OriginURL, tinyURL entity.TinyURL) error
 }
 
 func (m *MapRepository) FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
-	if ok := m.URLStorage[tinyURL]; ok != "" {
+	if _, ok := m.URLStorage[tinyURL]; ok {
 		return m.URLStorage[tinyURL], nil
 	}
 	return "", ErrNotFound
