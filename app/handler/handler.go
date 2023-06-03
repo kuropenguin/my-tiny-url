@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/kuropenguin/my-tiny-url/app/entity"
 	"github.com/kuropenguin/my-tiny-url/app/usecase"
 )
@@ -51,7 +50,7 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var createTinyRequest createTinyRequest
-	if err := json.Unmarshal(reqBody, &createTinyRequest); err != nil {
+	if err := json.Unmarshal(reqBody, &createTinyRequest); err != nil || createTinyRequest.OriginURL == "" {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -72,10 +71,9 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO request validation
-// curl localhost:8080/get_origin_url?tiny_url=
+// curl -X GET "localhost:8080/get_origin_url?tiny_url=http://localhost:8080/BpLnfgDs"
 func (h *HandlerImpl) GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	tinyURL := vars[tinyURLKey]
+	tinyURL := r.URL.Query().Get(tinyURLKey)
 	if tinyURL == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
