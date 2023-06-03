@@ -2,33 +2,17 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
-)
+	"net/http"
 
-var (
-	baseStr    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	baseStrLen = len(baseStr)
-	urlLen     = 8
+	"github.com/gorilla/mux"
+	"github.com/kuropenguin/my-tiny-url/app/handler"
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-	// TODO POST URL
-	// TODO GET URL
-	url := GenerateRandomString(urlLen)
-	fmt.Println(url)
-}
+	router := mux.NewRouter()
+	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
+	router.HandleFunc("/get_origin_url", handler.GetOriginURLByTinyURL).Methods("GET")
 
-func GenerateRandomString(loopNum int) string {
-	url := ""
-	for i := 0; i < loopNum; i++ {
-		url += GenerateRandomChar(baseStr)
-	}
-	return url
-}
-
-func GenerateRandomChar(str string) string {
-	randomNumber := rand.Intn(baseStrLen)
-	return string(str[randomNumber])
+	http.ListenAndServe(fmt.Sprintf(":%d", 8080), router)
+	// TODO graceful shutdown
 }
