@@ -7,9 +7,9 @@ import (
 )
 
 type IRepository interface {
-	Create(url entity.OriginURL, tinyURL entity.TinyURL) error
-	FindbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
-	FindbyURL(URL entity.OriginURL) (entity.TinyURL, error)
+	Save(url entity.OriginURL, tinyURL entity.TinyURL) error
+	FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
+	FindTinyURLbyURL(URL entity.OriginURL) (entity.TinyURL, error)
 }
 
 var (

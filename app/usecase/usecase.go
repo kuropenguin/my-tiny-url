@@ -8,7 +8,7 @@ import (
 
 type IUseCase interface {
 	CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error)
-	GetByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
+	GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
 }
 
 var (

@@ -14,19 +14,19 @@ type MapRepository struct {
 	URLStorage map[entity.TinyURL]entity.OriginURL
 }
 
-func (m *MapRepository) Create(url entity.OriginURL, tinyURL entity.TinyURL) error {
+func (m *MapRepository) Save(url entity.OriginURL, tinyURL entity.TinyURL) error {
 	m.URLStorage[tinyURL] = url
 	return nil
 }
 
-func (m *MapRepository) FindbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
+func (m *MapRepository) FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
 	if ok := m.URLStorage[tinyURL]; ok != "" {
 		return m.URLStorage[tinyURL], nil
 	}
 	return "", ErrNotFound
 }
 
-func (m *MapRepository) FindbyURL(url entity.OriginURL) (entity.TinyURL, error) {
+func (m *MapRepository) FindTinyURLbyURL(url entity.OriginURL) (entity.TinyURL, error) {
 	for tinyURL, originURL := range m.URLStorage {
 		if originURL == url {
 			return tinyURL, nil

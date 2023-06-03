@@ -14,18 +14,18 @@ func NewUsecaseImpl(repository repository.IRepository) *UsecaseImpl {
 }
 
 func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error) {
-	tinyURL, err := u.repository.FindbyURL(url)
+	tinyURL, err := u.repository.FindTinyURLbyURL(url)
 	// 既にあるならそれを返す
 	if err == nil {
 		return tinyURL, nil
 	}
 	for {
 		tinyURL = entity.GenerateTinyURL()
-		if _, err := u.repository.FindbyTinyURL(tinyURL); err != nil {
+		if _, err := u.repository.FindOriginURLbyTinyURL(tinyURL); err != nil {
 			if err != repository.ErrNotFound {
 				return "", err
 			}
-			err = u.repository.Create(url, tinyURL)
+			err = u.repository.Save(url, tinyURL)
 			if err != nil {
 				return "", err
 			}
@@ -35,8 +35,8 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 	return tinyURL, nil
 }
 
-func (u *UsecaseImpl) GetByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
-	url, err := u.repository.FindbyTinyURL(tinyURL)
+func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
+	url, err := u.repository.FindOriginURLbyTinyURL(tinyURL)
 	if err != nil {
 		return "", ErrNotFound
 	}
