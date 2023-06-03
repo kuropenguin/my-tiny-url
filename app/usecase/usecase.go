@@ -1,10 +1,14 @@
 package usecase
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/kuropenguin/my-tiny-url/app/entity"
+)
 
 type IUseCase interface {
-	CreateTinyURL(url string) (string, error)
-	GetTinyURL(tinyURL string) (string, error)
+	CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error)
+	GetTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
 }
 
 var (

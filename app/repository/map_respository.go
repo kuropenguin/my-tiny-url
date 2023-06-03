@@ -1,35 +1,36 @@
 package repository
 
+import "github.com/kuropenguin/my-tiny-url/app/entity"
+
 func NewMapRepository() IRepository {
 	return &MapRepository{
 		// TODO 永続化層に移す
 		//参考にする https://qiita.com/hirotakan/items/698c1f5773a3cca6193e
-		tinyURLStorage: make(map[string]string),
-		urlStorage:     make(map[string]string),
+		URLStorage: make(map[entity.TinyURL]entity.OriginURL),
 	}
 }
 
 type MapRepository struct {
-	tinyURLStorage map[string]string
-	urlStorage     map[string]string
+	URLStorage map[entity.TinyURL]entity.OriginURL
 }
 
-func (m *MapRepository) Create(url string, tinyURL string) error {
-	m.tinyURLStorage[tinyURL] = url
-	m.urlStorage[url] = tinyURL
+func (m *MapRepository) Create(url entity.OriginURL, tinyURL entity.TinyURL) error {
+	m.URLStorage[tinyURL] = url
 	return nil
 }
 
-func (m *MapRepository) FindbyTinyURL(tinyURL string) (string, error) {
-	if ok := m.tinyURLStorage[tinyURL]; ok != "" {
-		return m.tinyURLStorage[tinyURL], nil
+func (m *MapRepository) FindbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
+	if ok := m.URLStorage[tinyURL]; ok != "" {
+		return m.URLStorage[tinyURL], nil
 	}
 	return "", ErrNotFound
 }
 
-func (m *MapRepository) FindbyURL(url string) (string, error) {
-	if ok := m.urlStorage[url]; ok != "" {
-		return m.urlStorage[url], nil
+func (m *MapRepository) FindbyURL(url entity.OriginURL) (entity.TinyURL, error) {
+	for tinyURL, originURL := range m.URLStorage {
+		if originURL == url {
+			return tinyURL, nil
+		}
 	}
 	return "", ErrNotFound
 }
