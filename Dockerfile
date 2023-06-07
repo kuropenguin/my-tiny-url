@@ -9,3 +9,4 @@ WORKDIR /app
 COPY app/go.mod app/go.sum app/.air.toml ./ 
 
 CMD ["air", "-c", ".air.toml"]
+# CMD ["bash"]
