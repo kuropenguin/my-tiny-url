@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-    reload_test:
+    go:
       image: go-air
       container_name: go-air
       build: .
@@ -9,3 +9,4 @@ services:
         - 8080:8080
       volumes:
         - ./app:/app
+      tty: true
