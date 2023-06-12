@@ -10,3 +10,26 @@ services:
       volumes:
         - ./app:/app
       tty: true
+    mysql:
+      image: mysql:8.0
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: go_database
+        MYSQL_USER: go_user
+        MYSQL_PASSWORD: password
+        TZ: 'Asia/Tokyo'
+      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      volumes:
+        - mysql-data:/var/lib/mysql
+        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      ports:
+      - 3306:3306
+    redis:
+      image: redis:latest
+      container_name: go-redis
+      ports:
+        - '6379:6379'
+
+volumes:
+  mysql-data:
+    driver: local
