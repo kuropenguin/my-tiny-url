@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"net/http"
 	"os"
@@ -10,11 +11,23 @@ import (
 
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/kuropenguin/my-tiny-url/app/handler"
 	"github.com/kuropenguin/my-tiny-url/app/repository"
 	"github.com/kuropenguin/my-tiny-url/app/usecase"
 )
+
+func init() {
+	db, err := sql.Open("mysql", "go_user:password@tcp(go-mysql:3306)/go_database")
+	if err != nil {
+		panic(err)
+	}
+	// See "Important settings" section.
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+}
 
 func main() {
 	router := mux.NewRouter()
