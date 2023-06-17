@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/kuropenguin/my-tiny-url/app/handler"
 	"github.com/kuropenguin/my-tiny-url/app/mysql"
+	"github.com/kuropenguin/my-tiny-url/app/redis"
 	"github.com/kuropenguin/my-tiny-url/app/repository"
 	"github.com/kuropenguin/my-tiny-url/app/usecase"
 )
@@ -28,6 +29,8 @@ func main() {
 	router.HandleFunc("/get_origin_url", handler.GetOriginURLByTinyURL).Methods("GET")
 
 	log.Println("start server")
+
+	redis.NewRedisClient()
 
 	var wait time.Duration
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
