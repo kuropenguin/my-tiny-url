@@ -46,12 +46,12 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
 	//want using cache
 	cache, err := u.cache.Get(string(tinyURL))
-	if err == repository.ErrCacheNotFound {
+	if err != nil && err != repository.ErrCacheNotFound {
+		return "", err
+	}
+	if cache != "" {
 		log.Println("use cache")
 		return entity.OriginURL(cache), nil
-	}
-	if err != nil {
-		return "", err
 	}
 
 	url, err := u.repository.FindOriginURLbyTinyURL(tinyURL)
