@@ -7,6 +7,7 @@ import (
 
 type UsecaseImpl struct {
 	repository repository.IRepository
+	cache      repository.ICacheRepository
 }
 
 func NewUsecaseImpl(repository repository.IRepository) *UsecaseImpl {
@@ -33,6 +34,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 			break
 		}
 	}
+	u.cache.Save(string(url), string(tinyURL))
 	return tinyURL, nil
 }
 

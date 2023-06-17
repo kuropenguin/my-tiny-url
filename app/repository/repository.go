@@ -13,11 +13,11 @@ type IRepository interface {
 }
 
 type ICacheRepository interface {
-	Save(url entity.OriginURL, tinyURL entity.TinyURL) error
-	GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
-	GetTinyURLByOriginalURL(tinyURL entity.OriginURL) (entity.TinyURL, error)
+	Save(string, string) error
+	Get(string) (string, error)
 }
 
 var (
-	ErrNotFound = errors.New("not found")
+	ErrNotFound      = errors.New("not found")
+	ErrCacheNotFound = errors.New("cache not found")
 )
