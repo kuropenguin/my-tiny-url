@@ -13,13 +13,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/kuropenguin/my-tiny-url/app/handler"
+	"github.com/kuropenguin/my-tiny-url/app/mysql"
 	"github.com/kuropenguin/my-tiny-url/app/repository"
 	"github.com/kuropenguin/my-tiny-url/app/usecase"
 )
 
 func main() {
 	router := mux.NewRouter()
-	repository := repository.NewMapRepository()
+	// repository := repository.NewMapRepository()
+	repository := repository.NewMysqlRepository(mysql.GetDB())
 	usecase := usecase.NewUsecaseImpl(repository)
 	handler := handler.NewHandlerImple(usecase)
 	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
