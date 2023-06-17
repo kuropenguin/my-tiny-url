@@ -12,6 +12,12 @@ type IRepository interface {
 	FindTinyURLbyURL(URL entity.OriginURL) (entity.TinyURL, error)
 }
 
+type ICacheRepository interface {
+	Save(url entity.OriginURL, tinyURL entity.TinyURL) error
+	GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
+	GetTinyURLByOriginalURL(tinyURL entity.OriginURL) (entity.TinyURL, error)
+}
+
 var (
 	ErrNotFound = errors.New("not found")
 )
