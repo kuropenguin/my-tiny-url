@@ -12,6 +12,7 @@ services:
       tty: true
     mysql:
       image: mysql:8.0
+      container_name: go-mysql
       environment:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: go_database
