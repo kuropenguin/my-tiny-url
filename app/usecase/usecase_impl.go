@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"log"
+
 	"github.com/kuropenguin/my-tiny-url/app/entity"
 	"github.com/kuropenguin/my-tiny-url/app/repository"
 )
@@ -10,8 +12,11 @@ type UsecaseImpl struct {
 	cache      repository.ICacheRepository
 }
 
-func NewUsecaseImpl(repository repository.IRepository) *UsecaseImpl {
-	return &UsecaseImpl{repository: repository}
+func NewUsecaseImpl(repository repository.IRepository, cache repository.ICacheRepository) *UsecaseImpl {
+	return &UsecaseImpl{
+		repository: repository,
+		cache:      cache,
+	}
 }
 
 func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error) {
@@ -40,12 +45,26 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 
 func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
 	//want using cache
+	cache, err := u.cache.Get(string(tinyURL))
+	if err == repository.ErrCacheNotFound {
+		log.Println("use cache")
+		return entity.OriginURL(cache), nil
+	}
+	if err != nil {
+		return "", err
+	}
+
 	url, err := u.repository.FindOriginURLbyTinyURL(tinyURL)
 	if err == repository.ErrNotFound {
 		return "", ErrNotFound
 	}
 	if err != nil {
 		return "", err
+	}
+
+	err = u.cache.Save(string(tinyURL), string(url))
+	if err != nil {
+		log.Println("save err", err)
 	}
 	return url, nil
 }

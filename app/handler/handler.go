@@ -89,7 +89,9 @@ func (h *HandlerImpl) GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	res := getOriginURLResponse{OriginURL: string(originURL)}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		log.Println(err)
+	}
 }

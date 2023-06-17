@@ -26,11 +26,11 @@ func (r *CacheRedisRepository) Save(key, val string) error {
 
 func (r *CacheRedisRepository) Get(key string) (string, error) {
 	result := r.cacheStorage.Get(context.Background(), key)
+	if result.Err() == redis.Nil {
+		return "", ErrCacheNotFound
+	}
 	if result.Err() != nil {
 		return "", result.Err()
-	}
-	if result.Val() == "" {
-		return "", ErrCacheNotFound
 	}
 	return result.String(), nil
 }

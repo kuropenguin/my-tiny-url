@@ -18,11 +18,11 @@ type MysqlRepository struct {
 }
 
 func (m *MysqlRepository) Save(url entity.OriginURL, tinyURL entity.TinyURL) error {
-	stmt, err := m.URLStorage.Prepare("INSERT INTO url_storage (tiny_url, origin_url) VALUES (?, ?)")
+	stmt, err := m.URLStorage.Prepare("INSERT INTO urls (original_url, tiny_url) VALUES (?, ?)")
 	if err != nil {
 		return err
 	}
-	result, err := stmt.Exec(tinyURL, url)
+	result, err := stmt.Exec(url, tinyURL)
 	if err != nil {
 		return err
 	}
