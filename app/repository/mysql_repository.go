@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/kuropenguin/my-tiny-url/app/entity"
 )
@@ -38,12 +37,13 @@ func (m *MysqlRepository) Save(url entity.OriginURL, tinyURL entity.TinyURL) err
 func (m *MysqlRepository) FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
 	row := m.URLStorage.QueryRow("SELECT original_url FROM urls WHERE tiny_url = ?", tinyURL)
 	if row.Err() != nil {
-		log.Println(row.Err())
 		return "", row.Err()
 	}
 	var originalURL entity.OriginURL
 	if err := row.Scan(&originalURL); err != nil {
-		log.Println(err)
+		if err == sql.ErrNoRows {
+			return "", ErrNotFound
+		}
 		return "", err
 	}
 	return originalURL, nil
@@ -52,12 +52,13 @@ func (m *MysqlRepository) FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity
 func (m *MysqlRepository) FindTinyURLbyURL(url entity.OriginURL) (entity.TinyURL, error) {
 	row := m.URLStorage.QueryRow("SELECT tiny_url FROM urls WHERE original_url = ?", url)
 	if row.Err() != nil {
-		log.Println(row.Err())
 		return "", row.Err()
 	}
 	var tinyURL entity.TinyURL
 	if err := row.Scan(&tinyURL); err != nil {
-		log.Println(err)
+		if err == sql.ErrNoRows {
+			return "", ErrNotFound
+		}
 		return "", err
 	}
 	return tinyURL, nil

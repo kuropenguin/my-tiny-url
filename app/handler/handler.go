@@ -80,7 +80,6 @@ func (h *HandlerImpl) GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Reque
 	}
 	originURL, err := h.usecase.GetOriginURLByTinyURL(entity.TinyURL(tinyURL))
 	if err == usecase.ErrNotFound {
-		log.Println(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
