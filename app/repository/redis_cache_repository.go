@@ -36,5 +36,5 @@ func (r *CacheRedisRepository) Get(key string) (string, error) {
 	if result.Err() != nil {
 		return "", result.Err()
 	}
-	return result.String(), nil
+	return result.Val(), nil
 }
