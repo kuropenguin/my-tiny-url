@@ -6,6 +6,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	maxAge = 30 * 24 * 60 * 60
+)
+
 func NewCacheRedisRepository(rdb *redis.Client) ICacheRepository {
 	return &CacheRedisRepository{
 		cacheStorage: rdb,
@@ -17,7 +21,7 @@ type CacheRedisRepository struct {
 }
 
 func (r *CacheRedisRepository) Save(key, val string) error {
-	result := r.cacheStorage.Set(context.Background(), key, val, 0)
+	result := r.cacheStorage.Set(context.Background(), key, val, maxAge)
 	if result.Err() != nil {
 		return result.Err()
 	}
