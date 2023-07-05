@@ -2,12 +2,14 @@ package repository
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
 
 const (
-	maxAge = 30 * 24 * 60 * 60
+	maxAge = time.Duration(30 * 24 * 60 * 60 * time.Second)
 )
 
 func NewCacheRedisRepository(rdb *redis.Client) ICacheRepository {
@@ -20,8 +22,9 @@ type CacheRedisRepository struct {
 	cacheStorage *redis.Client
 }
 
-func (r *CacheRedisRepository) Save(key, val string) error {
+func (r *CacheRedisRepository) Set(key, val string) error {
 	result := r.cacheStorage.Set(context.Background(), key, val, maxAge)
+	fmt.Println(result.Err())
 	if result.Err() != nil {
 		return result.Err()
 	}

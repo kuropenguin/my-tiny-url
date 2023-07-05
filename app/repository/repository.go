@@ -13,7 +13,7 @@ type IRepository interface {
 }
 
 type ICacheRepository interface {
-	Save(string, string) error
+	Set(string, string) error
 	Get(string) (string, error)
 }
 

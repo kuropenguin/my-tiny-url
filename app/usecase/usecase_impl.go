@@ -39,7 +39,8 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 			break
 		}
 	}
-	u.cache.Save(string(url), string(tinyURL))
+	u.cache.Set(string(url), string(tinyURL))
+	u.cache.Set(string(tinyURL), string(url))
 	return tinyURL, nil
 }
 
@@ -51,6 +52,7 @@ func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.Orig
 	}
 	if cache != "" {
 		log.Println("use cache")
+		log.Println(cache)
 		return entity.OriginURL(cache), nil
 	}
 
@@ -62,7 +64,7 @@ func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.Orig
 		return "", err
 	}
 
-	err = u.cache.Save(string(tinyURL), string(url))
+	err = u.cache.Set(string(tinyURL), string(url))
 	if err != nil {
 		log.Println("save err", err)
 	}
