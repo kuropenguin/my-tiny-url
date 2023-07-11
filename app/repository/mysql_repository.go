@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kuropenguin/my-tiny-url/app/entity"
+	"github.com/kuropenguin/my-tiny-url/app/tutorial"
 )
 
 func NewMysqlRepository(db *sql.DB) IRepository {
@@ -46,6 +47,11 @@ func (m *MysqlRepository) FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity
 		}
 		return "", err
 	}
+
+	queries := tutorial.New(m.URLStorage)
+	urls, _ := queries.GetTinyURL(nil, string(originalURL))
+	fmt.Println(urls)
+
 	return originalURL, nil
 }
 
