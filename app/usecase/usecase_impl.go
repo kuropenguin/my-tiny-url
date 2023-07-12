@@ -30,18 +30,25 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 		return entity.TinyURL(cachedTinyURL), nil
 	}
 
+	// 既存DBチェック
 	tinyURL, err := u.repository.FindTinyURLByURL(url)
 	// 既にあるならそれを返す
 	if err == nil {
 		return tinyURL, nil
 	}
+	if err != repository.ErrNotFound {
+		return "", err
+	}
 
 	for {
+		// 作成
 		tinyURL = entity.GenerateTinyURL()
+		// 重複チェック
 		if _, err := u.repository.FindOriginalURLByTinyURL(tinyURL); err != nil {
 			if err != repository.ErrNotFound {
 				return "", err
 			}
+			// 重複していなければ保存(ここに来るのは ErrNotFound のみ)
 			err = u.repository.Save(url, tinyURL)
 			if err != nil {
 				return "", err
