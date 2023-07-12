@@ -31,7 +31,7 @@ func (m *MysqlRepository) Save(url entity.OriginalURL, tinyURL entity.TinyURL) e
 	return nil
 }
 
-func (m *MysqlRepository) FindOriginalURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
+func (m *MysqlRepository) FindOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
 	row := m.URLStorage.QueryRow("SELECT original_url FROM urls WHERE tiny_url = ?", tinyURL)
 	if row.Err() != nil {
 		return "", row.Err()
@@ -51,7 +51,7 @@ func (m *MysqlRepository) FindOriginalURLbyTinyURL(tinyURL entity.TinyURL) (enti
 	return originalURL, nil
 }
 
-func (m *MysqlRepository) FindTinyURLbyURL(url entity.OriginalURL) (entity.TinyURL, error) {
+func (m *MysqlRepository) FindTinyURLByURL(url entity.OriginalURL) (entity.TinyURL, error) {
 	row := m.URLStorage.QueryRow("SELECT tiny_url FROM urls WHERE original_url = ?", url)
 	if row.Err() != nil {
 		return "", row.Err()

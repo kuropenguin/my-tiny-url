@@ -21,16 +21,16 @@ func (m *MapRepository) Save(url entity.OriginalURL, tinyURL entity.TinyURL) err
 	return nil
 }
 
-func (m *MapRepository) FindOriginalURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
+func (m *MapRepository) FindOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
 	if _, ok := m.URLStorage[tinyURL]; ok {
 		return m.URLStorage[tinyURL], nil
 	}
 	return "", ErrNotFound
 }
 
-func (m *MapRepository) FindTinyURLbyURL(url entity.OriginalURL) (entity.TinyURL, error) {
-	for tinyURL, originURL := range m.URLStorage {
-		if originURL == url {
+func (m *MapRepository) FindTinyURLByURL(url entity.OriginalURL) (entity.TinyURL, error) {
+	for tinyURL, originalURL := range m.URLStorage {
+		if originalURL == url {
 			return tinyURL, nil
 		}
 	}
