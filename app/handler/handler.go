@@ -12,7 +12,7 @@ import (
 
 type IHanlder interface {
 	CreateTinyURL(w http.ResponseWriter, r *http.Request)
-	GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Request)
+	GetOriginalURLByTinyURL(w http.ResponseWriter, r *http.Request)
 }
 
 type HandlerImpl struct {
@@ -24,15 +24,15 @@ func NewHandlerImple(usecase usecase.IUseCase) *HandlerImpl {
 }
 
 type createTinyRequest struct {
-	OriginURL string `json:"origin_url"`
+	OriginalURL string `json:"original_url"`
 }
 
 type createTinyResponse struct {
 	TinyURL string `json:"tiny_url"`
 }
 
-type getOriginURLResponse struct {
-	OriginURL string `json:"origin_url"`
+type getOriginalURLResponse struct {
+	OriginalURL string `json:"original_url"`
 }
 
 const (
@@ -50,13 +50,13 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var createTinyRequest createTinyRequest
-	if err := json.Unmarshal(reqBody, &createTinyRequest); err != nil || createTinyRequest.OriginURL == "" {
+	if err := json.Unmarshal(reqBody, &createTinyRequest); err != nil || createTinyRequest.OriginalURL == "" {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	tinyURL, err := h.usecase.CreateTinyURL(entity.OriginURL(createTinyRequest.OriginURL))
+	tinyURL, err := h.usecase.CreateTinyURL(entity.OriginalURL(createTinyRequest.OriginalURL))
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -71,14 +71,14 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO request validation
-// curl -X GET "localhost:8080/get_origin_url?tiny_url=http://localhost:8080/BpLnfgDs"
-func (h *HandlerImpl) GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Request) {
+// curl -X GET "localhost:8080/get_original_url?tiny_url=http://localhost:8080/BpLnfgDs"
+func (h *HandlerImpl) GetOriginalURLByTinyURL(w http.ResponseWriter, r *http.Request) {
 	tinyURL := r.URL.Query().Get(tinyURLKey)
 	if tinyURL == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	originURL, err := h.usecase.GetOriginURLByTinyURL(entity.TinyURL(tinyURL))
+	originalURL, err := h.usecase.GetOriginalURLByTinyURL(entity.TinyURL(tinyURL))
 	if err == usecase.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -88,7 +88,7 @@ func (h *HandlerImpl) GetOriginURLByTinyURL(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	res := getOriginURLResponse{OriginURL: string(originURL)}
+	res := getOriginalURLResponse{OriginalURL: string(originalURL)}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(res); err != nil {

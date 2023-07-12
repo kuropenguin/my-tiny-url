@@ -11,7 +11,7 @@ const (
 
 type TinyURL string
 
-type OriginURL string
+type OriginalURL string
 
 func GenerateTinyURL() TinyURL {
 	return TinyURL(baseURL + generateRandomString(tinyLen))

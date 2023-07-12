@@ -7,9 +7,9 @@ import (
 )
 
 type IRepository interface {
-	Save(url entity.OriginURL, tinyURL entity.TinyURL) error
-	FindOriginURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error)
-	FindTinyURLbyURL(URL entity.OriginURL) (entity.TinyURL, error)
+	Save(url entity.OriginalURL, tinyURL entity.TinyURL) error
+	FindOriginalURLbyTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error)
+	FindTinyURLbyURL(URL entity.OriginalURL) (entity.TinyURL, error)
 }
 
 type ICacheRepository interface {

@@ -19,7 +19,7 @@ func NewUsecaseImpl(repository repository.IRepository, cache repository.ICacheRe
 	}
 }
 
-func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error) {
+func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, error) {
 	//want using cache
 	tinyURL, err := u.repository.FindTinyURLbyURL(url)
 	// 既にあるならそれを返す
@@ -28,7 +28,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 	}
 	for {
 		tinyURL = entity.GenerateTinyURL()
-		if _, err := u.repository.FindOriginURLbyTinyURL(tinyURL); err != nil {
+		if _, err := u.repository.FindOriginalURLbyTinyURL(tinyURL); err != nil {
 			if err != repository.ErrNotFound {
 				return "", err
 			}
@@ -44,7 +44,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginURL) (entity.TinyURL, error
 	return tinyURL, nil
 }
 
-func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginURL, error) {
+func (u *UsecaseImpl) GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
 	//want using cache
 	cache, err := u.cache.Get(string(tinyURL))
 	if err != nil && err != repository.ErrCacheNotFound {
@@ -53,10 +53,10 @@ func (u *UsecaseImpl) GetOriginURLByTinyURL(tinyURL entity.TinyURL) (entity.Orig
 	if cache != "" {
 		log.Println("use cache")
 		log.Println(cache)
-		return entity.OriginURL(cache), nil
+		return entity.OriginalURL(cache), nil
 	}
 
-	url, err := u.repository.FindOriginURLbyTinyURL(tinyURL)
+	url, err := u.repository.FindOriginalURLbyTinyURL(tinyURL)
 	if err == repository.ErrNotFound {
 		return "", ErrNotFound
 	}
