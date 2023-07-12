@@ -21,11 +21,11 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	// repository := repository.NewMapRepository()
 	repo := repository.NewMysqlRepository(mysql.GetDB())
 	cache := repository.NewCacheRedisRepository(redis.NewRedisClient())
 	usecase := usecase.NewUsecaseImpl(repo, cache)
 	handler := handler.NewHandlerImple(usecase)
+
 	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
 	router.HandleFunc("/get_origin_url", handler.GetOriginURLByTinyURL).Methods("GET")
 
