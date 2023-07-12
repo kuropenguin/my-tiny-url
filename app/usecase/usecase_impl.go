@@ -20,12 +20,22 @@ func NewUsecaseImpl(repository repository.IRepository, cache repository.ICacheRe
 }
 
 func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, error) {
-	//want using cache
+
+	// check cache
+	cachedTinyURL, err := u.cache.Get(string(url))
+	if err != nil && err != repository.ErrCacheNotFound {
+		return "", err
+	}
+	if cachedTinyURL != "" {
+		return entity.TinyURL(cachedTinyURL), nil
+	}
+
 	tinyURL, err := u.repository.FindTinyURLbyURL(url)
 	// 既にあるならそれを返す
 	if err == nil {
 		return tinyURL, nil
 	}
+
 	for {
 		tinyURL = entity.GenerateTinyURL()
 		if _, err := u.repository.FindOriginalURLbyTinyURL(tinyURL); err != nil {
@@ -45,7 +55,6 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 }
 
 func (u *UsecaseImpl) GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
-	//want using cache
 	cache, err := u.cache.Get(string(tinyURL))
 	if err != nil && err != repository.ErrCacheNotFound {
 		return "", err
