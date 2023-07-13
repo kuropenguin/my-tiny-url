@@ -1,7 +1,8 @@
+# sqlc generate 
 version: 1
 packages:
-  - path: "tutorial"
-    name: "tutorial"
+  - path: "queries"
+    name: "queries"
     engine: "mysql"
     schema: "schema.sql"
     queries: "query.sql"

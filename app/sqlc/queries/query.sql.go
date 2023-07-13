@@ -3,7 +3,7 @@
 //   sqlc v1.19.0
 // source: query.sql
 
-package tutorial
+package queries
 
 import (
 	"context"
