@@ -1,11 +1,11 @@
--- name: GetTinyURL :one
+-- name: GetTinyURLByOriginalURL :one
 
-SELECT * FROM urls WHERE original_url = ? LIMIT 1;
+SELECT tiny_url FROM urls WHERE original_url = ?;
 
--- name: ListOriginalURL :many
+-- name: GetOriginalURLByTinyURL :one
 
-SELECT * FROM urls ORDER BY original_url;
+SELECT original_url FROM urls WHERE tiny_url = ?;
 
--- name: CreateAuthor :execresult
+-- name: CreateURLs :execresult
 
-INSERT INTO urls ( original_url, tiny_url ) VALUES ( ?, ? );
+INSERT INTO urls (original_url, tiny_url) VALUES (?, ?);

@@ -10,56 +10,40 @@ import (
 	"database/sql"
 )
 
-const createAuthor = `-- name: CreateAuthor :execresult
+const createURLs = `-- name: CreateURLs :execresult
 
-INSERT INTO urls ( original_url, tiny_url ) VALUES ( ?, ? )
+INSERT INTO urls (original_url, tiny_url) VALUES (?, ?)
 `
 
-type CreateAuthorParams struct {
+type CreateURLsParams struct {
 	OriginalUrl string
 	TinyUrl     string
 }
 
-func (q *Queries) CreateAuthor(ctx context.Context, arg CreateAuthorParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createAuthor, arg.OriginalUrl, arg.TinyUrl)
+func (q *Queries) CreateURLs(ctx context.Context, arg CreateURLsParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, createURLs, arg.OriginalUrl, arg.TinyUrl)
 }
 
-const getTinyURL = `-- name: GetTinyURL :one
+const getOriginalURLByTinyURL = `-- name: GetOriginalURLByTinyURL :one
 
-SELECT original_url, tiny_url, created_at FROM urls WHERE original_url = ? LIMIT 1
+SELECT original_url FROM urls WHERE tiny_url = ?
 `
 
-func (q *Queries) GetTinyURL(ctx context.Context, originalUrl string) (Url, error) {
-	row := q.db.QueryRowContext(ctx, getTinyURL, originalUrl)
-	var i Url
-	err := row.Scan(&i.OriginalUrl, &i.TinyUrl, &i.CreatedAt)
-	return i, err
+func (q *Queries) GetOriginalURLByTinyURL(ctx context.Context, tinyUrl string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getOriginalURLByTinyURL, tinyUrl)
+	var original_url string
+	err := row.Scan(&original_url)
+	return original_url, err
 }
 
-const listOriginalURL = `-- name: ListOriginalURL :many
+const getTinyURLByOriginalURL = `-- name: GetTinyURLByOriginalURL :one
 
-SELECT original_url, tiny_url, created_at FROM urls ORDER BY original_url
+SELECT tiny_url FROM urls WHERE original_url = ?
 `
 
-func (q *Queries) ListOriginalURL(ctx context.Context) ([]Url, error) {
-	rows, err := q.db.QueryContext(ctx, listOriginalURL)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Url
-	for rows.Next() {
-		var i Url
-		if err := rows.Scan(&i.OriginalUrl, &i.TinyUrl, &i.CreatedAt); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetTinyURLByOriginalURL(ctx context.Context, originalUrl string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTinyURLByOriginalURL, originalUrl)
+	var tiny_url string
+	err := row.Scan(&tiny_url)
+	return tiny_url, err
 }
