@@ -21,7 +21,7 @@ import (
 
 func main() {
 	// TODO
-	// sqlc
+	// sqlc : mysql で sqlc 使う
 	// request validation
 	// logging
 
