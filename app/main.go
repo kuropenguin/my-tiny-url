@@ -20,6 +20,11 @@ import (
 )
 
 func main() {
+	// TODO
+	// sqlc
+	// request validation
+	// logging
+
 	router := mux.NewRouter()
 	repo := repository.NewMysqlRepository(mysql.GetDB())
 	cache := repository.NewCacheRedisRepository(redis.NewRedisClient())
