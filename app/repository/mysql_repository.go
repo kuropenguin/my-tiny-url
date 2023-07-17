@@ -1,67 +1,51 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/kuropenguin/my-tiny-url/app/entity"
+	"github.com/kuropenguin/my-tiny-url/app/sqlc/queries"
 )
 
 func NewMysqlRepository(db *sql.DB) IRepository {
 	return &MysqlRepository{
-		URLStorage: db,
+		queries: queries.New(db),
 	}
 }
 
 type MysqlRepository struct {
-	URLStorage *sql.DB
+	queries *queries.Queries
 }
 
 func (m *MysqlRepository) Save(url entity.OriginalURL, tinyURL entity.TinyURL) error {
-	stmt, err := m.URLStorage.Prepare("INSERT INTO urls (original_url, tiny_url) VALUES (?, ?)")
-	if err != nil {
-		return err
-	}
-	result, err := stmt.Exec(url, tinyURL)
-	if err != nil {
-		return err
-	}
-	if _, err := result.LastInsertId(); err != nil {
+	if _, err := m.queries.CreateURLs(context.Background(), queries.CreateURLsParams{
+		OriginalUrl: string(url),
+		TinyUrl:     string(tinyURL),
+	}); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m *MysqlRepository) FindOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
-	row := m.URLStorage.QueryRow("SELECT original_url FROM urls WHERE tiny_url = ?", tinyURL)
-	if row.Err() != nil {
-		return "", row.Err()
-	}
-	var originalURL entity.OriginalURL
-	if err := row.Scan(&originalURL); err != nil {
+	rawOriginalURL, err := m.queries.GetOriginalURLByTinyURL(context.Background(), string(tinyURL))
+	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", ErrNotFound
 		}
 		return "", err
 	}
-
-	// sqlc example
-	// queries := tutorial.New(m.URLStorage)
-	// urls, _ := queries.GetTinyURL(nil, string(originalURL))
-
-	return originalURL, nil
+	return entity.OriginalURL(rawOriginalURL), nil
 }
 
 func (m *MysqlRepository) FindTinyURLByURL(url entity.OriginalURL) (entity.TinyURL, error) {
-	row := m.URLStorage.QueryRow("SELECT tiny_url FROM urls WHERE original_url = ?", url)
-	if row.Err() != nil {
-		return "", row.Err()
-	}
-	var tinyURL entity.TinyURL
-	if err := row.Scan(&tinyURL); err != nil {
+	rawTinyURL, err := m.queries.GetTinyURLByOriginalURL(context.Background(), string(url))
+	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", ErrNotFound
 		}
 		return "", err
 	}
-	return tinyURL, nil
+	return entity.TinyURL(rawTinyURL), nil
 }
