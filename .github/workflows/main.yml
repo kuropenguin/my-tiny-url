@@ -16,7 +16,8 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.19.3' # あなたのGoのバージョンに合わせてください
-
+    - name: Move to app directory
+      run: cd app
     - name: Build Go application
       run: |
         go build -o myapp .
