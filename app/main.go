@@ -32,7 +32,7 @@ func main() {
 	handler := handler.NewHandlerImple(usecase)
 
 	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
-	router.HandleFunc("/get_origin_url", handler.GetOriginalURLByTinyURL).Methods("GET")
+	router.HandleFunc("/get_original_url", handler.GetOriginalURLByTinyURL).Methods("GET")
 
 	log.Println("start server")
 

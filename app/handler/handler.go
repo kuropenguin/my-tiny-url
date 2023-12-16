@@ -40,7 +40,7 @@ const (
 )
 
 // TODO request validation
-// curl -X POST -H "Content-Type: application/json" -d '{"origin_url":"google.com"}' localhost:8080/create_tiny_url
+// curl -X POST -H "Content-Type: application/json" -d '{"original_url":"google.com"}' localhost:8080/create_tiny_url
 func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -71,7 +71,7 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO request validation
-// curl -X GET "localhost:8080/get_origin_url?tiny_url=http://localhost:8080/BpLnfgDs"
+// curl -X GET "localhost:8080/get_original_url?tiny_url=http://localhost:8080/BpLnfgDs"
 func (h *HandlerImpl) GetOriginalURLByTinyURL(w http.ResponseWriter, r *http.Request) {
 	tinyURL := r.URL.Query().Get(tinyURLKey)
 	if tinyURL == "" {
