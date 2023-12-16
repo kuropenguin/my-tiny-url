@@ -71,7 +71,7 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO request validation
-// curl -X GET "localhost:8080/get_original_url?tiny_url=http://localhost:8080/BpLnfgDs"
+// curl -X GET "localhost:8080/get_origin_url?tiny_url=http://localhost:8080/BpLnfgDs"
 func (h *HandlerImpl) GetOriginalURLByTinyURL(w http.ResponseWriter, r *http.Request) {
 	tinyURL := r.URL.Query().Get(tinyURLKey)
 	if tinyURL == "" {
