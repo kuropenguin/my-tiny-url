@@ -29,7 +29,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: ${{ secrets.EC2_PORT }}
         source: "app/myapp"
-        target: "/path/on/ec2"
+        target: "~"
 
     - name: Restart application
       uses: appleboy/ssh-action@master
