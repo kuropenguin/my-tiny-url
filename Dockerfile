@@ -10,4 +10,3 @@ COPY app/ /app/
 
 
 CMD ["air", "-c", ".air.toml"]
-# CMD ["bash"]
