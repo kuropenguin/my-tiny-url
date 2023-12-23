@@ -33,6 +33,7 @@ func main() {
 	usecase := usecase.NewUsecaseImpl(repo, cache)
 	handler := handler.NewHandlerImple(usecase)
 
+	router.HandleFunc("/health", handler.CreateTinyURL).Methods("GET")
 	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
 	router.HandleFunc("/get_original_url", handler.GetOriginalURLByTinyURL).Methods("GET")
 

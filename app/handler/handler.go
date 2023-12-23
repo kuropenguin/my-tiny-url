@@ -39,6 +39,12 @@ const (
 	tinyURLKey = "tiny_url"
 )
 
+// curl -X GET -H localhost:8080/health
+func (h *HandlerImpl) Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
 // TODO request validation
 // curl -X POST -H "Content-Type: application/json" -d '{"original_url":"google.com"}' localhost:8080/create_tiny_url
 func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
