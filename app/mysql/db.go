@@ -13,7 +13,8 @@ var (
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql", "admin:password@tcp(tiny-url.cgssfxuiz3lu.ap-northeast-1.rds.amazonaws.com:3306)/go_database")
+	// db, err = sql.Open("mysql", "admin:password@tcp(tiny-url.cgssfxuiz3lu.ap-northeast-1.rds.amazonaws.com:3306)/go_database")
+	db, err = sql.Open("mysql", "go_user:password@tcp(go-mysql:3306)/go_database")
 	if err != nil {
 		panic(err)
 	}
