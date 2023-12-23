@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"time"
 
+	"log"
+
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/gommon/log"
 )
 
 var (
