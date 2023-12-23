@@ -14,7 +14,8 @@ var (
 
 func NewRedisClient() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "my-tiny-url-aiwe7o.serverless.apne1.cache.amazonaws.com:6379", // Redisサーバーのアドレス
+		// Addr:     "my-tiny-url-aiwe7o.serverless.apne1.cache.amazonaws.com:6379", // Redisサーバーのアドレス
+		Addr:     "127.0.0.1:6379",
 		Password: "",
 		DB:       0, // 使用するDB
 		TLSConfig: &tls.Config{ // トランジット中の暗号化を使用するためのTLS設定
