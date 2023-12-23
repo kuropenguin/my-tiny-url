@@ -2,8 +2,6 @@ FROM golang:1.19.5
 
 RUN apt update -y && apt upgrade -y
 RUN go install github.com/cosmtrek/air@v1.29.0
-RUN go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
-RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 
 WORKDIR /app
