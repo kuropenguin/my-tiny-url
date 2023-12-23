@@ -6,7 +6,8 @@ RUN go install github.com/cosmtrek/air@v1.29.0
 
 WORKDIR /app
 
-COPY app/go.mod app/go.sum app/.air.toml ./ 
+COPY app/ /app/
+
 
 CMD ["air", "-c", ".air.toml"]
 # CMD ["bash"]
