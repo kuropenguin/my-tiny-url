@@ -5,6 +5,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/gommon/log"
 )
 
 var (
@@ -23,7 +24,8 @@ func init() {
 	db.SetMaxIdleConns(10)
 
 	if err := db.Ping(); err != nil {
-		panic(err)
+		log.Printf("Error connecting to the database: %s", err)
+		// panic(err)
 	}
 }
 
