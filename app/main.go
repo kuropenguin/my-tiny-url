@@ -26,6 +26,7 @@ func main() {
 	// logging
 
 	log.Println("start server ...")
+	log.Println("deploy test ...")
 
 	router := mux.NewRouter()
 	repo := repository.NewMysqlRepository(mysql.GetDB())
