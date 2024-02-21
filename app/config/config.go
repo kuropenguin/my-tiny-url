@@ -1,6 +1,11 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+
+	"github.com/joho/godotenv"
+)
 
 type env string
 
@@ -16,4 +21,18 @@ func getEnv() env {
 	default:
 		return EnvDev
 	}
+}
+
+func IsDev() bool {
+	return getEnv() == EnvDev
+}
+
+func Load() {
+	if IsDev() {
+		err := godotenv.Load("../../env/.env.dev")
+		if err != nil {
+			panic(fmt.Sprintf("Error loading .env file: %v", err))
+		}
+	}
+
 }
