@@ -4,17 +4,22 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
 )
 
-type env string
+type appEnv string
+
+type config struct {
+	SecretKey string `env:"SECRET_KEY,expand"`
+}
 
 const (
-	EnvDev env = "dev"
-	EnvPrd env = "prd"
+	EnvDev appEnv = "dev"
+	EnvPrd appEnv = "prd"
 )
 
-func getEnv() env {
+func getEnv() appEnv {
 	switch env := os.Getenv("ENV"); env {
 	case "prd":
 		return EnvPrd
@@ -34,5 +39,8 @@ func Load() {
 			panic(fmt.Sprintf("Error loading .env file: %v", err))
 		}
 	}
-
+	cfg := config{}
+	if err := env.Parse(&cfg); err != nil {
+		panic(err)
+	}
 }

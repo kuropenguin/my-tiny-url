@@ -3,6 +3,7 @@ module github.com/kuropenguin/my-tiny-url/app
 go 1.19
 
 require (
+	github.com/caarlos0/env/v10 v10.0.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
