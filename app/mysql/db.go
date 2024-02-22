@@ -18,7 +18,7 @@ var (
 func init() {
 	var err error
 	// db, err = sql.Open("mysql", "admin:password@tcp(tiny-url.cgssfxuiz3lu.ap-northeast-1.rds.amazonaws.com:3306)/go_database")
-	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.MySQLCfg.User, config.MySQLCfg.Password, config.MySQLCfg.Host, config.MySQLCfg.Port, config.MySQLCfg.Database))
+	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.MySQL.User, config.MySQL.Password, config.MySQL.Host, config.MySQL.Port, config.MySQL.Database))
 	if err != nil {
 		panic(err)
 	}
