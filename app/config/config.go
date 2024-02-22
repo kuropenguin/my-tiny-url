@@ -11,7 +11,10 @@ import (
 type appEnv string
 
 type config struct {
-	SecretKey string `env:"SECRET_KEY,expand"`
+	MySQLDatabase string `env:"MYSQL_DATABASE" envDefault:"go_database"`
+	MySQLUser     string `env:"MYSQL_USER"`
+	MySQLPassword string `env:"MYSQL_PASSWORD"`
+	TZ            string `env:"TZ" envDefault:"Asia/Tokyo"`
 }
 
 const (
@@ -34,7 +37,7 @@ func IsDev() bool {
 
 func Load() {
 	if IsDev() {
-		err := godotenv.Load("../../env/.env.dev")
+		err := godotenv.Load("env/.env.dev")
 		if err != nil {
 			panic(fmt.Sprintf("Error loading .env file: %v", err))
 		}
@@ -43,4 +46,5 @@ func Load() {
 	if err := env.Parse(&cfg); err != nil {
 		panic(err)
 	}
+	fmt.Printf("%+v\n", cfg)
 }
