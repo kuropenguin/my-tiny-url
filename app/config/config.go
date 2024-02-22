@@ -10,12 +10,16 @@ import (
 
 type appEnv string
 
-type config struct {
-	MySQLDatabase string `env:"MYSQL_DATABASE" envDefault:"go_database"`
-	MySQLUser     string `env:"MYSQL_USER"`
-	MySQLPassword string `env:"MYSQL_PASSWORD"`
-	TZ            string `env:"TZ" envDefault:"Asia/Tokyo"`
+type mysqlCfg struct {
+	Database string `env:"MYSQL_DATABASE" envDefault:"go_database"`
+	Port     int    `env:"MYSQL_PORT" envDefault:"3306"`
+	Host     string `env:"MYSQL_HOST"`
+	User     string `env:"MYSQL_USER"`
+	Password string `env:"MYSQL_PASSWORD"`
+	TZ       string `env:"TZ" envDefault:"Asia/Tokyo"`
 }
+
+var MySQLCfg mysqlCfg
 
 const (
 	EnvDev appEnv = "dev"
@@ -31,6 +35,10 @@ func getEnv() appEnv {
 	}
 }
 
+func init() {
+	Load()
+}
+
 func IsDev() bool {
 	return getEnv() == EnvDev
 }
@@ -42,9 +50,7 @@ func Load() {
 			panic(fmt.Sprintf("Error loading .env file: %v", err))
 		}
 	}
-	cfg := config{}
-	if err := env.Parse(&cfg); err != nil {
+	if err := env.Parse(&MySQLCfg); err != nil {
 		panic(err)
 	}
-	fmt.Printf("%+v\n", cfg)
 }
