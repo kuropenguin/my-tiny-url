@@ -12,7 +12,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	"github.com/kuropenguin/my-tiny-url/app/config"
 	"github.com/kuropenguin/my-tiny-url/app/handler"
 	"github.com/kuropenguin/my-tiny-url/app/mysql"
 	"github.com/kuropenguin/my-tiny-url/app/redis"
@@ -27,9 +26,6 @@ func main() {
 	// logging
 
 	log.Println("start server ...")
-	log.Println("deploy test ...")
-
-	config.Load()
 
 	router := mux.NewRouter()
 	repo := repository.NewMysqlRepository(mysql.GetDB())
