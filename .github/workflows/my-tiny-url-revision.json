@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:709139818723:task-definition/my-tiny-url:18",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:709139818723:task-definition/my-tiny-url:20",
     "containerDefinitions": [
         {
             "name": "golang-app",
@@ -82,7 +82,7 @@
     "taskRoleArn": "arn:aws:iam::709139818723:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::709139818723:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 18,
+    "revision": 20,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
