@@ -12,7 +12,7 @@ type appEnv string
 
 const (
 	EnvDev appEnv = "dev"
-	EnvPrd appEnv = "prd"
+	EnvPrd appEnv = "prod"
 )
 
 type (
@@ -57,6 +57,7 @@ func IsDev() bool {
 
 func Load() {
 	if IsDev() {
+		fmt.Println("load .env.dev")
 		err := godotenv.Load("env/.env.dev")
 		if err != nil {
 			panic(fmt.Sprintf("Error loading .env file: %v", err))
@@ -67,12 +68,14 @@ func Load() {
 }
 
 func loadMySQLCfg() {
+	fmt.Println("load MySQLCfg")
 	if err := env.Parse(&MySQL); err != nil {
 		panic(err)
 	}
 }
 
 func loadRedisCfg() {
+	fmt.Println("load RedisCfg")
 	if err := env.Parse(&Reids); err != nil {
 		panic(err)
 	}
