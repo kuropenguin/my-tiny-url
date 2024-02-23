@@ -51,11 +51,11 @@
                 },
                 {
                     "name": "REDIS_DB",
-                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/rds/database"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/redis/database"
                 },
                 {
                     "name": "REDIS_PASSWORD",
-                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/rds/password"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/redis/password"
                 },
                 {
                     "name": "REDIS_HOST",
@@ -63,7 +63,7 @@
                 },
                 {
                     "name": "REDIS_PORT",
-                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/rds/port"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:709139818723:parameter/tiny-url/redis/port"
                 }
             ],
             "logConfiguration": {
