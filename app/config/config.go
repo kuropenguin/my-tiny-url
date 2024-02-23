@@ -72,6 +72,7 @@ func loadMySQLCfg() {
 	if err := env.Parse(&MySQL); err != nil {
 		panic(err)
 	}
+	fmt.Printf("%+v\n", MySQL)
 }
 
 func loadRedisCfg() {
@@ -79,4 +80,5 @@ func loadRedisCfg() {
 	if err := env.Parse(&Reids); err != nil {
 		panic(err)
 	}
+	fmt.Printf("%+v\n", Reids)
 }
