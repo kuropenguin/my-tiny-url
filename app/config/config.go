@@ -40,7 +40,7 @@ var (
 
 func getEnv() appEnv {
 	switch env := os.Getenv("ENV"); env {
-	case "prd":
+	case "prod":
 		return EnvPrd
 	default:
 		return EnvDev
