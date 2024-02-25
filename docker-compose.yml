@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   go:
-    image: go-air
+    # image: go-air
     container_name: go-air
     build: .
     ports:
@@ -29,12 +29,12 @@ services:
     ports:
       - "6379:6379"
 
-  golang-migrate:
-    image: golang-migrate-image
-    container_name: golang-migrate
+  migrate:
+    container_name: migrate
+    env_file: ./app/env/.env.dev
     build:
       context: .
-      dockerfile: Dockerfile-golang-migrate
+      dockerfile: Dockerfile-migrate
     tty: true
 
 volumes:
