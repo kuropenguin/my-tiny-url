@@ -10,6 +10,7 @@ services:
     volumes:
       - ./app:/app
     tty: true
+
   mysql:
     image: mysql:8.0
     container_name: go-mysql
@@ -27,6 +28,14 @@ services:
     container_name: go-redis
     ports:
       - "6379:6379"
+
+  golang-migrate:
+    image: golang-migrate-image
+    container_name: golang-migrate
+    build:
+      context: .
+      dockerfile: Dockerfile-golang-migrate
+    tty: true
 
 volumes:
   mysql-data:

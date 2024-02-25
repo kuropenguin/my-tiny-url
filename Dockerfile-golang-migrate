@@ -1,0 +1,8 @@
+FROM golang:1.19.5
+
+WORKDIR /migrations
+
+RUN go install github.com/sqldef/sqldef/cmd/mysqldef@latest
+
+
+CMD ["tail", "-f", "/dev/null"]
