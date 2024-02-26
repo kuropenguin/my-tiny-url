@@ -2,7 +2,14 @@ FROM golang:1.19.5
 
 WORKDIR /migrations
 
+# スキーマファイルのコピー
+COPY ./mysql/initdb.d/01_schema.sql .
+
+COPY ./script/mysqldef_migration.sh .
+RUN chmod +x ./mysqldef_migration.sh
+
+# mysqldef のインストール
 RUN go install github.com/sqldef/sqldef/cmd/mysqldef@latest
 
-
-CMD ["tail", "-f", "/dev/null"]
+# エントリポイントの指定
+ENTRYPOINT ["./mysqldef_migration.sh"]
