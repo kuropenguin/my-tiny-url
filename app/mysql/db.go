@@ -16,6 +16,11 @@ var (
 )
 
 func init() {
+	// TODO DELETE ME
+	for {
+		fmt.Println("Connecting to MySQL ...")
+		time.Sleep(5 * time.Second)
+	}
 	var err error
 	// db, err = sql.Open("mysql", "admin:password@tcp(tiny-url.cgssfxuiz3lu.ap-northeast-1.rds.amazonaws.com:3306)/go_database")
 	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.MySQL.User, config.MySQL.Password, config.MySQL.Host, config.MySQL.Port, config.MySQL.Database))
