@@ -42,19 +42,17 @@ env:
   ECR_REPOSITORY_MIGRATE: tiny-url-migrate          # set this to your Amazon ECR repository name
   SUBNET_ID: subnet-0a41df28dc054b461
   SG_ID: sg-0957449da66838464
-                                               # file, e.g. .aws/task-definition.json
-                                               # containerDefinitions section of your task definition
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  deploy:
-    name: Deploy
+  migration:
+    name: Run migration
     runs-on: ubuntu-latest
-    environment: production
-
+    # mysql/schema.sql に変更があるときのみ実行
+    if: contains(github.event.head_commit.modified, 'mysql/schema.sql')
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -70,7 +68,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-  # マイグレーションコンテナをビルドし、ECRにプッシュ
+    # マイグレーションコンテナをビルドし、ECRにプッシュ
     - name: Build, tag, and push migration image to Amazon ECR (tiny-url-migrate)
       env:
         MIGRATION_IMAGE_TAG: migrate-${{ github.sha }}
@@ -96,6 +94,27 @@ jobs:
     - name: Wait for migration task to complete
       run: |
         aws ecs wait tasks-stopped --cluster ${{ env.ECS_CLUSTER }} --tasks $MIGRATION_TASK_ARN
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: migration  # migrationジョブの完了を待つ
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR tiny-url
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build, tag, and push image to Amazon ECR tiny-url
       id: build-image
