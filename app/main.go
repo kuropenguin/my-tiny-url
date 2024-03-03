@@ -13,6 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/kuropenguin/my-tiny-url/app/handler"
+	"github.com/kuropenguin/my-tiny-url/app/middleware"
 	"github.com/kuropenguin/my-tiny-url/app/mysql"
 	"github.com/kuropenguin/my-tiny-url/app/redis"
 	"github.com/kuropenguin/my-tiny-url/app/repository"
@@ -32,6 +33,9 @@ func main() {
 	cache := repository.NewCacheRedisRepository(redis.NewRedisClient())
 	usecase := usecase.NewUsecaseImpl(repo, cache)
 	handler := handler.NewHandlerImple(usecase)
+
+	router.Use(middleware.LoggingMiddleware)
+	router.Use(middleware.Transaction)
 
 	router.HandleFunc("/health", handler.Health).Methods("GET")
 	router.HandleFunc("/create_tiny_url", handler.CreateTinyURL).Methods("POST")
