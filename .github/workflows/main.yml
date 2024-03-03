@@ -108,7 +108,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    if: always()      # これを入れておかないと migration job が skip されたときに deploy job が実行されない
+    if: success()      # これを入れておかないと migration job が skip されたときに deploy job が実行されない
     needs: migration  # migrationジョブの完了を待つ
     environment: production
 
