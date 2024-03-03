@@ -22,9 +22,7 @@ import (
 
 func main() {
 	// TODO
-	// sqlc : mysql で sqlc 使う
 	// request validation
-	// logging
 
 	log.Println("start server ...")
 
