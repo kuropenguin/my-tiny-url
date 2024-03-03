@@ -36,8 +36,13 @@ env:
   ECS_SERVICE: tiny-url-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: my-tiny-url                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: ./.github/workflows/my-tiny-url-revision.json # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: golang-app           # set this to the name of the container in the
+  # migrate
+  ECS_TASK_DEFINITION_MIGRATE: ./.github/workflows/my-tiny-url-migrate-revision.json # set this to the path to your Amazon ECS task definition
+  ECR_REPOSITORY_MIGRATE: tiny-url-migrate          # set this to your Amazon ECR repository name
+  SUBNET_ID: subnet-0a41df28dc054b461
+  SG_ID: sg-0957449da66838464
+                                               # file, e.g. .aws/task-definition.json
                                                # containerDefinitions section of your task definition
 
 permissions:
@@ -61,11 +66,37 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
+    - name: Login to Amazon ECR tiny-url
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to Amazon ECR
+  # マイグレーションコンテナをビルドし、ECRにプッシュ
+    - name: Build, tag, and push migration image to Amazon ECR (tiny-url-migrate)
+      env:
+        MIGRATION_IMAGE_TAG: migrate-${{ github.sha }}
+      run: |
+        docker build -f Dockerfile-migrate -t $ECR_REPOSITORY_MIGRATE/tiny-url-migrate:$MIGRATION_IMAGE_TAG .
+        docker push $ECR_REPOSITORY_MIGRATE/tiny-url-migrate:$MIGRATION_IMAGE_TAG
+        echo "migration-image=$ECR_REPOSITORY_MIGRATE/tiny-url-migrate:$MIGRATION_IMAGE_TAG" >> $GITHUB_ENV
+
+    # マイグレーションタスクを実行
+    - name: Run migration task on Amazon ECS (tiny-url-migrate)
+      run: |
+        MIGRATION_TASK_ARN=$(aws ecs run-task \
+          --cluster my-tiny-url \
+          --task-definition arn:aws:ecs:ap-northeast-1:709139818723:task-definition/my-tiny-url-migration:1 \
+          --launch-type FARGATE \
+          --network-configuration "awsvpcConfiguration={subnets=[subnet-0a41df28dc054b461],securityGroups=[sg-0957449da66838464],assignPublicIp=ENABLED}" \
+          --query "tasks[0].taskArn" \
+          --output text)
+        echo "MIGRATION_TASK_ARN=$MIGRATION_TASK_ARN" >> $GITHUB_ENV
+
+    # マイグレーションタスクの完了を待つ
+    - name: Wait for migration task to complete
+      run: |
+        aws ecs wait tasks-stopped --cluster ${{ env.ECS_CLUSTER }} --tasks $MIGRATION_TASK_ARN
+
+    - name: Build, tag, and push image to Amazon ECR tiny-url
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -78,7 +109,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
+    - name: Fill in the new image ID in the Amazon ECS task definition tiny-url
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
@@ -86,7 +117,7 @@ jobs:
         container-name: ${{ env.CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
-    - name: Deploy Amazon ECS task definition
+    - name: Deploy Amazon ECS task definition tiny-url
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
