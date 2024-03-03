@@ -79,15 +79,6 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_MIGRATE:$MIGRATION_IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_MIGRATE:$MIGRATION_IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # migration task definition に新しいイメージIDを埋め込む
-    - name: Fill in the new image ID in the Amazon ECS task definition tiny-url-migrate
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION_MIGRATE }}
-        container-name: ${{ env.CONTAINER_NAME_MIGRATE }}
-        image: ${{ steps.build-image.outputs.image }}
-
     # マイグレーションタスクを実行
     - name: Run migration task on Amazon ECS (tiny-url-migrate)
       run: |
