@@ -40,7 +40,7 @@ env:
   # migrate
   ECS_TASK_DEFINITION_MIGRATE: ./.github/workflows/my-tiny-url-migrate-revision.json # set this to the path to your Amazon ECS task definition
   ECR_REPOSITORY_MIGRATE: tiny-url-migrate          # set this to your Amazon ECR repository name
-  CONTAINER_NAME_MIGRATE: migration           # set this to the name of the container in the
+  CONTAINER_NAME_MIGRATE: migrate-container # set this to the name of the container in the
   SUBNET_ID: subnet-0a41df28dc054b461
   SG_ID: sg-0957449da66838464
 
