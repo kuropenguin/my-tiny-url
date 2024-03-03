@@ -52,7 +52,7 @@ jobs:
     name: Run migration
     runs-on: ubuntu-latest
     # mysql/schema.sql に変更があるときのみ実行
-    if: contains(github.event.head_commit.modified, 'mysql/*/*schema.sql')
+    if: contains(github.event.head_commit.modified, '*schema.sql')
     steps:
     - name: Checkout
       uses: actions/checkout@v3
