@@ -88,22 +88,12 @@ jobs:
         container-name: ${{ env.CONTAINER_NAME_MIGRATE }}
         image: ${{ steps.build-image.outputs.image }}
 
-# タスク定義を ECS に登録し、タスク定義の ARN を取得
-    - name: Register task definition and get ARN
-      id: register-task-def
-      run: |
-        TASK_DEF_ARN=$(aws ecs register-task-definition \
-          --cli-input-json file://${{ steps.task-def.outputs.task-definition }} \
-          --query 'taskDefinition.taskDefinitionArn' \
-          --output text)
-        echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
-
     # マイグレーションタスクを実行
     - name: Run migration task on Amazon ECS (tiny-url-migrate)
       run: |
         MIGRATION_TASK_ARN=$(aws ecs run-task \
           --cluster my-tiny-url \
-          --task-definition $TASK_DEF_ARN \
+          --task-definition tiny-url-migrate \
           --launch-type FARGATE \
           --network-configuration "awsvpcConfiguration={subnets=[subnet-0a41df28dc054b461],securityGroups=[sg-0957449da66838464],assignPublicIp=ENABLED}" \
           --query "tasks[0].taskArn" \
