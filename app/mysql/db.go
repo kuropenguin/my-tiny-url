@@ -9,10 +9,12 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kuropenguin/my-tiny-url/app/config"
+	"github.com/kuropenguin/my-tiny-url/app/sqlc/queries"
 )
 
 var (
 	db *sql.DB
+	q  *queries.Queries
 )
 
 func init() {
@@ -30,8 +32,14 @@ func init() {
 		log.Printf("Error connecting to the database: %s", err)
 		// panic(err)
 	}
+
+	q = queries.New(db)
 }
 
 func GetDB() *sql.DB {
 	return db
+}
+
+func GetSQLCQueries() *queries.Queries {
+	return q
 }

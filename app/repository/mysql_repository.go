@@ -8,9 +8,9 @@ import (
 	"github.com/kuropenguin/my-tiny-url/app/sqlc/queries"
 )
 
-func NewMysqlRepository(db *sql.DB) IRepository {
+func NewMysqlRepository(q *queries.Queries) IRepository {
 	return &MysqlRepository{
-		queries: queries.New(db),
+		queries: q,
 	}
 }
 

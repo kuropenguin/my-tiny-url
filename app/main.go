@@ -28,7 +28,7 @@ func main() {
 	log.Println("start server ...")
 
 	router := mux.NewRouter()
-	repo := repository.NewMysqlRepository(mysql.GetDB())
+	repo := repository.NewMysqlRepository(mysql.GetSQLCQueries())
 	cache := repository.NewCacheRedisRepository(redis.NewRedisClient())
 	usecase := usecase.NewUsecaseImpl(repo, cache)
 	handler := handler.NewHandlerImple(usecase)
