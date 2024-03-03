@@ -13,6 +13,8 @@ type appEnv string
 const (
 	EnvDev appEnv = "dev"
 	EnvPrd appEnv = "prod"
+
+	TxKey = "tx"
 )
 
 type (
