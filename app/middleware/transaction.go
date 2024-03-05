@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -36,8 +35,6 @@ func Transaction(next http.Handler) http.Handler {
 
 		wrr := newResponseWriterWrapper(w)
 		next.ServeHTTP(wrr, r)
-
-		fmt.Println(wrr.statusCode)
 
 		if http.StatusOK <= wrr.statusCode && wrr.statusCode < http.StatusBadRequest {
 			tx.Commit()
