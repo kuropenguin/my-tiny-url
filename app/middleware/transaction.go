@@ -2,16 +2,49 @@ package middleware
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/kuropenguin/my-tiny-url/app/config"
 	"github.com/kuropenguin/my-tiny-url/app/mysql"
 )
 
+type responseWriterWrapper struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func newResponseWriterWrapper(w http.ResponseWriter) *responseWriterWrapper {
+	return &responseWriterWrapper{ResponseWriter: w, statusCode: 0}
+}
+
+func (rww *responseWriterWrapper) WriteHeader(code int) {
+	rww.statusCode = code
+	rww.ResponseWriter.WriteHeader(code)
+}
+
 func Transaction(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), config.TxKey, mysql.GetSQLCQueries)
+		tx, err := mysql.GetDB().Begin()
+		if err != nil {
+			panic(err)
+		}
+		qTx := mysql.GetSQLCQueries().WithTx(tx)
+		ctx := context.WithValue(r.Context(), config.TxKey, qTx)
 		r = r.WithContext(ctx)
-		next.ServeHTTP(w, r)
+
+		wrr := newResponseWriterWrapper(w)
+		next.ServeHTTP(wrr, r)
+
+		fmt.Println(wrr.statusCode)
+
+		if http.StatusOK <= wrr.statusCode && wrr.statusCode < http.StatusBadRequest {
+			tx.Commit()
+			log.Println("commit")
+		} else {
+			tx.Rollback()
+			log.Println("commit")
+		}
 	})
 }
