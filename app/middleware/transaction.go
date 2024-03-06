@@ -36,12 +36,14 @@ func Transaction(next http.Handler) http.Handler {
 		wrr := newResponseWriterWrapper(w)
 		next.ServeHTTP(wrr, r)
 
+		// tx.Rollback()
 		if http.StatusOK <= wrr.statusCode && wrr.statusCode < http.StatusBadRequest {
-			tx.Commit()
+			tx.Rollback()
+			// tx.Commit()
 			log.Println("commit")
 		} else {
 			tx.Rollback()
-			log.Println("commit")
+			log.Println("rollback")
 		}
 	})
 }
