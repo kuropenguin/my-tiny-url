@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"log"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kuropenguin/my-tiny-url/app/config"
 	"github.com/kuropenguin/my-tiny-url/app/sqlc/queries"
@@ -29,8 +27,7 @@ func init() {
 	db.SetMaxIdleConns(10)
 
 	if err := db.Ping(); err != nil {
-		log.Printf("Error connecting to the database: %s", err)
-		// panic(err)
+		panic(err)
 	}
 
 	q = queries.New(db)
