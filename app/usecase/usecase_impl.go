@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/kuropenguin/my-tiny-url/app/entity"
@@ -21,7 +22,10 @@ func NewUsecaseImpl(repository repository.IRepository, cache repository.ICacheRe
 
 func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, error) {
 	// check cache
+	fmt.Println("url", url)
+	fmt.Println("cache")
 	cachedTinyURL, err := u.cache.Get(string(url))
+	fmt.Println("cache")
 	if err != nil && err != repository.ErrCacheNotFound {
 		return "", err
 	}
@@ -30,6 +34,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 	}
 
 	// 既存DBチェック
+	fmt.Println("check db")
 	tinyURL, err := u.repository.FindTinyURLByURL(url)
 	// 既にあるならそれを返す
 	if err == nil {

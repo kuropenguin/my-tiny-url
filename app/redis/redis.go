@@ -24,6 +24,9 @@ func NewRedisClient() *redis.Client {
 			MinVersion: tls.VersionTLS12, // TLS1.2以上を使用する設定
 		},
 	})
+	if err := rdb.Ping(ctx).Err(); err != nil {
+		panic(rdb.Ping(ctx).Err())
+	}
 
 	return rdb
 }
