@@ -1,15 +1,16 @@
 package repository
 
 import (
+	"context"
 	"errors"
 
 	"github.com/kuropenguin/my-tiny-url/app/entity"
 )
 
 type IRepository interface {
-	Save(url entity.OriginalURL, tinyURL entity.TinyURL) error
-	FindOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error)
-	FindTinyURLByURL(URL entity.OriginalURL) (entity.TinyURL, error)
+	Save(ctx *context.Context, url entity.OriginalURL, tinyURL entity.TinyURL) error
+	FindOriginalURLByTinyURL(ctx *context.Context, tinyURL entity.TinyURL) (entity.OriginalURL, error)
+	FindTinyURLByURL(ctx *context.Context, URL entity.OriginalURL) (entity.TinyURL, error)
 }
 
 type ICacheRepository interface {

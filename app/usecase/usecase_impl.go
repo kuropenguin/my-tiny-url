@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -20,12 +21,9 @@ func NewUsecaseImpl(repository repository.IRepository, cache repository.ICacheRe
 	}
 }
 
-func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, error) {
+func (u *UsecaseImpl) CreateTinyURL(ctx *context.Context, url entity.OriginalURL) (entity.TinyURL, error) {
 	// check cache
-	fmt.Println("url", url)
-	fmt.Println("cache")
 	cachedTinyURL, err := u.cache.Get(string(url))
-	fmt.Println("cache")
 	if err != nil && err != repository.ErrCacheNotFound {
 		return "", err
 	}
@@ -35,7 +33,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 
 	// 既存DBチェック
 	fmt.Println("check db")
-	tinyURL, err := u.repository.FindTinyURLByURL(url)
+	tinyURL, err := u.repository.FindTinyURLByURL(ctx, url)
 	// 既にあるならそれを返す
 	if err == nil {
 		return tinyURL, nil
@@ -48,12 +46,12 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 		// 作成
 		tinyURL = entity.GenerateTinyURL()
 		// 重複チェック
-		if _, err := u.repository.FindOriginalURLByTinyURL(tinyURL); err != nil {
+		if _, err := u.repository.FindOriginalURLByTinyURL(ctx, tinyURL); err != nil {
 			if err != repository.ErrNotFound {
 				return "", err
 			}
 			// 重複していなければ保存(ここに来るのは ErrNotFound のみ)
-			err = u.repository.Save(url, tinyURL)
+			err = u.repository.Save(ctx, url, tinyURL)
 			if err != nil {
 				return "", err
 			}
@@ -65,7 +63,7 @@ func (u *UsecaseImpl) CreateTinyURL(url entity.OriginalURL) (entity.TinyURL, err
 	return tinyURL, nil
 }
 
-func (u *UsecaseImpl) GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
+func (u *UsecaseImpl) GetOriginalURLByTinyURL(ctx *context.Context, tinyURL entity.TinyURL) (entity.OriginalURL, error) {
 	cachedOriginalURL, err := u.cache.Get(string(tinyURL))
 	if err != nil && err != repository.ErrCacheNotFound {
 		return "", err
@@ -74,7 +72,7 @@ func (u *UsecaseImpl) GetOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.Or
 		return entity.OriginalURL(cachedOriginalURL), nil
 	}
 
-	url, err := u.repository.FindOriginalURLByTinyURL(tinyURL)
+	url, err := u.repository.FindOriginalURLByTinyURL(ctx, tinyURL)
 	if err == repository.ErrNotFound {
 		return "", ErrNotFound
 	}

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/kuropenguin/my-tiny-url/app/entity"
 )
 
@@ -16,19 +18,19 @@ type MapRepository struct {
 	URLStorage map[entity.TinyURL]entity.OriginalURL
 }
 
-func (m *MapRepository) Save(url entity.OriginalURL, tinyURL entity.TinyURL) error {
+func (m *MapRepository) Save(ctx *context.Context, url entity.OriginalURL, tinyURL entity.TinyURL) error {
 	m.URLStorage[tinyURL] = url
 	return nil
 }
 
-func (m *MapRepository) FindOriginalURLByTinyURL(tinyURL entity.TinyURL) (entity.OriginalURL, error) {
+func (m *MapRepository) FindOriginalURLByTinyURL(ctx *context.Context, tinyURL entity.TinyURL) (entity.OriginalURL, error) {
 	if _, ok := m.URLStorage[tinyURL]; ok {
 		return m.URLStorage[tinyURL], nil
 	}
 	return "", ErrNotFound
 }
 
-func (m *MapRepository) FindTinyURLByURL(url entity.OriginalURL) (entity.TinyURL, error) {
+func (m *MapRepository) FindTinyURLByURL(ctx *context.Context, url entity.OriginalURL) (entity.TinyURL, error) {
 	for tinyURL, originalURL := range m.URLStorage {
 		if originalURL == url {
 			return tinyURL, nil

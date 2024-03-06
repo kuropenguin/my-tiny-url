@@ -62,7 +62,8 @@ func (h *HandlerImpl) CreateTinyURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tinyURL, err := h.usecase.CreateTinyURL(entity.OriginalURL(createTinyRequest.OriginalURL))
+	ctx := r.Context()
+	tinyURL, err := h.usecase.CreateTinyURL(&ctx, entity.OriginalURL(createTinyRequest.OriginalURL))
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -84,7 +85,8 @@ func (h *HandlerImpl) GetOriginalURLByTinyURL(w http.ResponseWriter, r *http.Req
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	originalURL, err := h.usecase.GetOriginalURLByTinyURL(entity.TinyURL(tinyURL))
+	ctx := r.Context()
+	originalURL, err := h.usecase.GetOriginalURLByTinyURL(&ctx, entity.TinyURL(tinyURL))
 	if err == usecase.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
