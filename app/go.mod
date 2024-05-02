@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lestrrat-go/jwx/v2 v2.0.21
